@@ -1,0 +1,8 @@
+numpy
+scipi
+itertools
+sklearn
+optparse
+matplotlib"
+random
+progressbar2
