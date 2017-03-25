@@ -1,8 +1,7 @@
-numpy
-scipi
-itertools
-sklearn
-optparse
-matplotlib"
-random
-progressbar2
+scipy>=0.18.1
+numpy>=1.11.3
+pytest>=3.0
+scikit-learn>=0.18.1
+itertools>=10.1
+matplotlib>=2.0.0
+progressbar2>=3.16.0
