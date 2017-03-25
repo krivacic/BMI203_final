@@ -1,6 +1,12 @@
 import numpy as np
 
-
+"""
+A note on data parsing:
+Most of this is self-explanatory. Each basepair is a 4-bit byte consisting of a single 1 and three 0s.
+What I want to point out is that for the negative test set, I am just taking every 17 basepairs as one
+unit of data, rather than every possible 17-basepair stretch. I tried this at first; the datafile alone
+is over 200 mb, and training the neural network was impossible. 
+"""
 def parse(l):
     Xt = []
     i = 0

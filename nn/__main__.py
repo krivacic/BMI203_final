@@ -94,7 +94,8 @@ the withheld section of data is used to test the network's performance.
 if options.operationtype == False:
     for i in range(0,5):
         print("Training dataset {}".format(i+1))
-        NN.__init__(68,1,200)
+        NN.__init__(68,1,200) # Reinitialize the neural network class so that each withheld dataset gets a fresh neural net.
+        # Choose withheld dataset based on i.
         X1test = X1list[i]
         X2test = X2list[i]
         y1test = y1list[i]
@@ -105,6 +106,7 @@ if options.operationtype == False:
         ytrainlistneg = []
         for j in range(0,5):
             if j != i:
+                # Choose training dataset (all j for j !=i)
                 Xtrainlistpos.append(X1list[j])
                 Xtrainlistneg.append(X2list[j])
                 ytrainlistpos.append(y1list[j])
@@ -118,13 +120,14 @@ if options.operationtype == False:
         ytrain = np.concatenate((ytrainpos,ytrainneg))
 
 
-        if options.descenttype == False:
+        if options.descenttype == False: # Perform stochastic gradient descent.
             out = NN.train_stochastic(Xtrain,ytrain,options.iter,options.alpha,options.lam,Xtrainpos.shape[0],Xtrainneg.shape[0])
-        elif options.descenttype == True:
+        elif options.descenttype == True: #In case you're crazy and want to do batch descent. This kills your computer.
             out = NN.train(Xtrain,ytrain,options.iter,options.alpha,options.lam)
         print(out)
         Xtest = np.concatenate((X1test,X2test))
         ytest = np.concatenate((y1test,y2test))
+        # Get scores from NN.forward for test dataset, then generate and ROC curve.
         scores = NN.forward(Xtest)
         fpr,tpr,thresholds = metrics.roc_curve(ytest,scores)
         roc_auc = metrics.auc(fpr,tpr)
@@ -150,6 +153,7 @@ if options.operationtype == True:
     y2 = np.concatenate(y2list)
     Xtrain = np.concatenate((X1,X2))
     ytrain = np.concatenate((y1,y2))
+    # Train on entire dataset available:
     out = NN.train_stochastic(Xtrain,ytrain,options.iter,options.alpha,options.lam,X1.shape[0],X2.shape[0])
     # Generate an ROC curve of training data just as a sanity check to make sure things are still working.
     fpr,tpr,thresholds = metrics.roc_curve(ytrain,out)
@@ -167,16 +171,6 @@ if options.operationtype == True:
     plt.legend(loc = "lower right")
     plt.show()
 
-    Xtest = get_data("rap1-lieb-test.txt")
-    out = NN.forward(Xtest)
-    np.savetxt('np_out.txt',out)
-
-
-#print(NN.W1)
-#T = trainer(NN)
-#T.train(X,y)
-#print(NN.yHat)
-#newX = ([.1,.4,.01,.3,.4,.8,.8,.1])
-#print(NN.forward(newX))
-
-#NN.train(X,y,options.iter,options.alpha,options.lam)
+    Xtest = get_data("rap1-lieb-test.txt") # Get data from the unknowns data file
+    out = NN.forward(Xtest) # Run data through NN
+    np.savetxt('np_out.txt',out) # Save data to text file

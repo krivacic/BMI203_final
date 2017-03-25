@@ -153,46 +153,40 @@ class neural_network(object):
         lim = 9e-12
         pos = 0
         neg = 0
+        # Progres bar! Because I was sick of fast-scrolling iteration numbers.
         bar = progressbar.ProgressBar(maxval = iterations, widgets = [progressbar.Bar('=','[',']'),' ', progressbar.Percentage()])
         bar.start()
         for i in range(0,iterations):
             bar.update(i+1)
-            #sleep(0.1)
-            rn = random.uniform(0,1)
-            #print(rn)
+            rn = random.uniform(0,1) # This is the random number that determines whether positive or negative data will be used this iteration.
             if rn > 0.3:
-                rn2 = random.randint(0,len1-1)
-                #print("positive example")
+                rn2 = random.randint(0,len1-1) # If it's greater than 0.3, use positive data.
             else:
-                rn2 = random.randint(len1,len1 + len2-1)
-                #print("negative example")
-
-            #print('index chosen',rn2)
+                rn2 = random.randint(len1,len1 + len2-1) # If less, use negative.
+            # Positive vs negative data is determined by the index of the numpy array. The way the data is set up, positive data comes before neagtive.
 
             cf = self.costfunction_stochastic(X,y,rn2,lam)
-            #print('cost function',cf)
-            #print('yhat',self.forward(X[rn2]))
-            alf = (2*alpha * cf) + alpha
-            #print("alpha",alf)
+            alf = (2*alpha * cf) + alpha #Use cost function value to alter alpha.
+            # Set update matrices to zero each iteration
             dW1 = np.zeros((self.inputlayersize,self.hiddenlayersize))
             dW2 = np.zeros((self.hiddenlayersize,self.outputlayersize))
             db1 = np.zeros((1,self.hiddenlayersize))
             db2 = np.zeros((1,self.outputlayersize))
 
+            # Find partial derivatives
             dJdW1,dJdW2,dJdb1,dJdb2 = self.costfunctionprime_stochastic(X,y,rn2)
+            # Update "change" matrices
             dW1 += dJdW1
             dW2 += dJdW2
             db1 += dJdb1
             db2 += dJdb2
 
+            # And finally, update the weight and bias matrices. Since they are class objects, these will be stored outside of this function for use with test data.
             self.W1 = self.W1 - alf*(((1/m) * dW1) + lam * self.W1)
             self.W2 = self.W2 - alf*(((1/m) * dW2) + lam * self.W2)
             self.bias1 = self.bias1 - alf*((1/m) * db1)
             self.bias2 = self.bias2 - alf*((1/m) * db2)
 
-            #if np.all(dJdW1 <= lim) and np.all(dJdW2 <= lim) and np.all(dJdb1 <= lim) and np.all(dJdb2 <= lim):
-                #print("-------------------------------------converged-------------------------------------")
-                #break
 
         bar.finish()
         print("score")
