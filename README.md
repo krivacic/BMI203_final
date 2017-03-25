@@ -10,3 +10,5 @@ Options:
 '-l <#>' or '--lambda <#>' to set lambda value
 '-t' or '--train' to train the model on all known data, then run the unknown data through the model.
 """
+
+Link to travis results: https://travis-ci.org/krivacic/BMI203_final.svg?branch=master
